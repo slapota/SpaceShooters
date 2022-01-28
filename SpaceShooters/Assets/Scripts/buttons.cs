@@ -29,6 +29,7 @@ public class buttons : MonoBehaviour
     public void Click()
     {
         rocket.SetActive(false);
+        rocket.transform.position = new Vector3(0, -4, 0);
         rocket.SetActive(true);
         Time.timeScale = 1;
         ast.score = 0;
