@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class asteroids : MonoBehaviour
+public class Asteroids : MonoBehaviour
 {
     public Quaternion rot;
+    public ParticleSystem explosion;
 
     private void Update()
     {
@@ -12,7 +13,8 @@ public class asteroids : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime);
         if(transform.position.y < -6f)
         {
-            Time.timeScale = 0;
+            Instantiate(explosion, transform.position, transform.rotation).Play();
+            Time.timeScale = 0.05f;
             Destroy(gameObject);
         }
     }
@@ -21,7 +23,8 @@ public class asteroids : MonoBehaviour
     {
         if (other.name == "Bolt(Clone)" || other.name == "Player")
         {
-            GameObject.Find("Asteroids").GetComponent<asteroids_M>().Boom();
+            Instantiate(explosion, transform.position, transform.rotation);
+            GameObject.Find("Asteroids").GetComponent<AsteroidsM>().boom.Play();
             Destroy(gameObject);
         }
     }

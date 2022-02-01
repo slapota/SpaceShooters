@@ -1,14 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public CharacterController move;
     public float speed;
-    public AudioSource boom;
     float x;
     float y;
+    public ParticleSystem explosion;
 
     private void Update()
     {
@@ -43,9 +43,10 @@ public class player : MonoBehaviour
     {
         if (other.name != "Bolt(Clone)")
         {
-            boom.Play();
+            Instantiate(explosion, transform.position, transform.rotation).Play();
+            GameObject.Find("Asteroids").GetComponent<AsteroidsM>().playerBoom.Play();
             gameObject.SetActive(false);
-            Time.timeScale = 0;
+            Time.timeScale = 0.05f;
         }
     }
 }

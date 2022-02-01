@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class bolt : MonoBehaviour
+public class Bolt : MonoBehaviour
 {
     public float pSpeed;
-    
+    public Score score;
 
     private void Update()
     {
@@ -17,7 +17,7 @@ public class bolt : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        GameObject.Find("Asteroids").GetComponent<asteroids_M>().score++;
+        GameObject.Find("Canvas").GetComponent<Score>().score++;
         Destroy(this.gameObject);
     }
 }
