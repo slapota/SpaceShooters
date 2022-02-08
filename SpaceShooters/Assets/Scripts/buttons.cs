@@ -20,14 +20,25 @@ public class Buttons : MonoBehaviour
     Data player;
     int position;
     public Text[] best, texts;
+    bool playerExists = false;
 
     bool Button() => Time.timeScale == 0.05f;
     public void NewUser()
     {
-        player = new Data(user.text, key.text, 0, 0.5f);
-        leaderBoard.Add(player);
-        position = leaderBoard.IndexOf(player);
-        Save.SaveData<Data>(leaderBoard, file);
+        foreach (var item in leaderBoard)
+        {
+            if(item.userName == user.text)
+            {
+                playerExists = true;
+            }
+        }
+        if (!playerExists)
+        {
+            player = new Data(user.text, key.text, 0, 0.5f);
+            leaderBoard.Add(player);
+            position = leaderBoard.IndexOf(player);
+            Save.SaveData<Data>(leaderBoard, file);
+        }
     }
     private void Start()
     {
@@ -79,17 +90,13 @@ public class Buttons : MonoBehaviour
             }
         }
     }
-    void Update()
-    {
-        music.volume = menu.GetComponent<Menu>().volume;
-    }
-    public void Colors(Button color)
+    /*public void Colors(Button color)
     {
         for (int i = 0; i < texts.Length; i++)
         {
-            texts[i].color = color.GetComponent<Renderer>().material.color;
+            texts[i].color = color.GetComponent<Button>().;
         }
-    }
+    }*/
     public void PlayAgain()
     {
         rocket.SetActive(false);
@@ -128,16 +135,14 @@ public class Buttons : MonoBehaviour
         rocket.SetActive(true);
         yield return new WaitUntil(Button);
         playAgain.SetActive(true);
-        if(player != null)
-        {
-            player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume);
-        }
-        leaderBoard[position] = player;
+        leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
         if(score.score > high)
         {
             high = score.score;
             if(player != null)
             {
+                player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume);
+                leaderBoard[position] = player;
                 leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
                 for (int i = 0; i < best.Length; i++)
                 {

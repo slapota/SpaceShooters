@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
     public Slider slider;
     public Text text;
     public float volume;
+    public Buttons buttons;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class Menu : MonoBehaviour
         slider.onValueChanged.AddListener((v) =>
         {
             volume = v;
+            buttons.GetComponent<Buttons>().music.volume = v;
             text.text = $"VOLUME: {volume}";
         });
     }
