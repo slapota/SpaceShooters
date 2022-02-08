@@ -6,6 +6,7 @@ public class Asteroids : MonoBehaviour
 {
     public Quaternion rot;
     public ParticleSystem explosion;
+    public AsteroidsM ast;
 
     private void Update()
     {
@@ -21,11 +22,6 @@ public class Asteroids : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Bolt(Clone)" || other.name == "Player")
-        {
-            Instantiate(explosion, transform.position, transform.rotation);
-            GameObject.Find("Asteroids").GetComponent<AsteroidsM>().boom.Play();
-            Destroy(gameObject);
-        }
+        CollisionManager.Asteroid(explosion, other, ast, gameObject);
     }
 }

@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     float x;
     float y;
     public ParticleSystem explosion;
+    public AsteroidsM ast;
 
     private void Update()
     {
@@ -41,12 +42,6 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name != "Bolt(Clone)")
-        {
-            Instantiate(explosion, transform.position, transform.rotation).Play();
-            GameObject.Find("Asteroids").GetComponent<AsteroidsM>().playerBoom.Play();
-            gameObject.SetActive(false);
-            Time.timeScale = 0.05f;
-        }
+        CollisionManager.Player(other, explosion, gameObject, ast);
     }
 }

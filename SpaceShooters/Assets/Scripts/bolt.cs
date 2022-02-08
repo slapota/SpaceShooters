@@ -15,9 +15,8 @@ public class Bolt : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter()
     {
-        GameObject.Find("Canvas").GetComponent<Score>().score++;
-        Destroy(this.gameObject);
+        CollisionManager.Bolt(score, gameObject);
     }
 }

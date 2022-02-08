@@ -16,9 +16,6 @@ public class EnemyBolt : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.name == "Player")
-        {
-            Destroy(gameObject);
-        }
+        CollisionManager.Bolt(null, gameObject);
     }
 }

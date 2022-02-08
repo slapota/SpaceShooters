@@ -4864,6 +4864,8 @@ MonoBehaviour:
   enemyBolt: {fileID: 1313413127407962, guid: a6dec75a86bc7433d9072168e9604870, type: 3}
   shot: {fileID: 8200000}
   explosion: {fileID: 19800012, guid: 384371afbb4354cc9a3fc68eab303756, type: 3}
+  ast: {fileID: 0}
+  menu: {fileID: 0}
 --- !u!136 &6030807209499566769
 CapsuleCollider:
   m_ObjectHideFlags: 0

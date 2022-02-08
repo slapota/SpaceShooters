@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     public AudioSource shot;
     float dodgeSpeed;
     public ParticleSystem explosion;
+    public AsteroidsM ast;
+    public Menu menu;
 
     private void Start()
     {
@@ -22,23 +24,19 @@ public class Enemy : MonoBehaviour
         {
             Time.timeScale = 0.05f;
             Instantiate(explosion, transform.position, transform.rotation).Play();
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Bolt(Clone)" || other.name == "Player")
-        {
-            Instantiate(explosion, transform.position, transform.rotation);
-            GameObject.Find("Asteroids").GetComponent<AsteroidsM>().enemyBoom.Play();
-            Destroy(gameObject);
-        }
+        CollisionManager.Asteroid(explosion, other, ast, gameObject);
     }
 
     IEnumerator Shoot()
     {
         yield return new WaitForSeconds(Random.Range(0.5f, 2f));
         Instantiate(enemyBolt, transform.position - new Vector3(0, 1f, 0), enemyBolt.transform.rotation);
+        shot.volume = menu.GetComponent<Menu>().volume;
         shot.Play();
         StartCoroutine(Shoot());
     }
