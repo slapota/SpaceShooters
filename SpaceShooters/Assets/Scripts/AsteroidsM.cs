@@ -9,18 +9,10 @@ public class AsteroidsM : MonoBehaviour
     public GameObject enemy;
     public AudioSource boom, enemyBoom, playerBoom;
     public Menu menu;
-    float volume;
 
     private void Start()
     {
         StartCoroutine(Spawning());
-    }
-    void Update()
-    {
-        volume = menu.GetComponent<Menu>().volume;
-        playerBoom.volume = volume;
-        boom.volume = volume;
-        enemyBoom.volume = volume;
     }
 
     IEnumerator Spawning()

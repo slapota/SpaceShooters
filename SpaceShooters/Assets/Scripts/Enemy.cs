@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(0.5f, 2f));
         Instantiate(enemyBolt, transform.position - new Vector3(0, 1f, 0), enemyBolt.transform.rotation);
-        shot.volume = menu.GetComponent<Menu>().volume;
+        shot.volume = menu.GetComponent<Menu>().boltVolume;
         shot.Play();
         StartCoroutine(Shoot());
     }

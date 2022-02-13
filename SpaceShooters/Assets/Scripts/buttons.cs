@@ -8,7 +8,7 @@ public class Buttons : MonoBehaviour
 {
     public GameObject rocket, playAgain, login, register, ok;
     public AudioSource music;
-    public Text highScore, nickName;
+    public Text highScore, nickName, error;
     public int high;
     public Score score;
     public Menu menu;
@@ -17,7 +17,7 @@ public class Buttons : MonoBehaviour
     public string file;
     public InputField user, key;
     bool newUser;
-    Data player;
+    public Data player = null;
     int position;
     public Text[] best, texts;
     bool playerExists = false;
@@ -34,10 +34,19 @@ public class Buttons : MonoBehaviour
         }
         if (!playerExists)
         {
-            player = new Data(user.text, key.text, 0, 0.5f);
+            nickName.text = user.text;
+            user.gameObject.SetActive(false);
+            key.gameObject.SetActive(false);
+            ok.SetActive(false);
+            player = new Data(user.text, key.text, 0, 0.5f, new Color(158, 185, 255, 255), 0.5f);
             leaderBoard.Add(player);
             position = leaderBoard.IndexOf(player);
             Save.SaveData<Data>(leaderBoard, file);
+        }
+        else
+        {
+            playerExists = false;
+            StartCoroutine(Error($"PLAYER NAMED {user.text} ALREADY EXISTS"));
         }
     }
     private void Start()
@@ -62,41 +71,66 @@ public class Buttons : MonoBehaviour
     }
     public void Ok()
     {
-        ok.SetActive(false);
-        if (newUser)
+        if(user.text == "")
         {
-            nickName.text = user.text;
-            user.gameObject.SetActive(false);
-            key.gameObject.SetActive(false);
+            ok.SetActive(false);
+            login.SetActive(true);
+            register.SetActive(true);
+        }
+        else if (newUser)
+        {
             NewUser();
         }
         else
         {
+            bool playerExists = false;
+            Data d = new Data(null, null, 0, 0, Color.white, 0);
             foreach (var item in leaderBoard)
             {
-                if (user.text == item.userName)
+                if(user.text == item.userName)
                 {
-                    if (key.text == item.password)
-                    {
-                        position = leaderBoard.IndexOf(item);
-                        player = item;
-                        high = player.score;
-                        menu.GetComponent<Menu>().LoadVolume(item.volume);
-                        nickName.text = user.text;
-                        user.gameObject.SetActive(false);
-                        key.gameObject.SetActive(false);
-                    }
+                    playerExists = true;
+                    d = item;
                 }
+            }
+            if (playerExists)
+            {
+                if (key.text == d.password)
+                {
+                    ok.SetActive(false);
+                    position = leaderBoard.IndexOf(d);
+                    player = d;
+                    high = player.score;
+                    menu.GetComponent<Menu>().LoadVolume(d.volume, d.boltVolume);
+                    nickName.text = user.text;
+                    Text(d.rgb);
+                    user.gameObject.SetActive(false);
+                    key.gameObject.SetActive(false);
+                }
+                else
+                {
+                    StartCoroutine(Error("WRONG PASSWORD"));
+                }
+            }
+            else
+            {
+                StartCoroutine(Error($"{user.text} DOES NOT EXIST"));
             }
         }
     }
-    /*public void Colors(Button color)
+    void Text(Color color)
     {
         for (int i = 0; i < texts.Length; i++)
         {
-            texts[i].color = color.GetComponent<Button>().;
+            texts[i].color = color;
         }
-    }*/
+    }
+    public void Colors(GameObject color)
+    {
+        Color c = color.GetComponent<Image>().color;
+        Text(c);
+        player = new Data(player.userName, player.password, player.score, player.volume, c, player.boltVolume);
+    }
     public void PlayAgain()
     {
         rocket.SetActive(false);
@@ -139,27 +173,34 @@ public class Buttons : MonoBehaviour
         if(score.score > high)
         {
             high = score.score;
-            if(player != null)
-            {
-                player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume);
-                leaderBoard[position] = player;
-                leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
-                for (int i = 0; i < best.Length; i++)
-                {
-                    try
-                    {
-                        best[i].text = $"{i+1}. {leaderBoard[i].userName} | {leaderBoard[i].score}";
-                    }
-                    catch
-                    {
-                        best[i].text = $"{i+1}. - | -";
-                    }
-                }
-                Save.SaveData<Data>(leaderBoard, file);
-            }
+            
         }
-        highScore.text = $"HighScore: {high}";
+        highScore.text = $"HighScore: {high}"; 
+        if (player != null)
+        {
+            player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume, player.rgb, menu.GetComponent<Menu>().boltVolume);
+            leaderBoard[position] = player;
+            leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
+            for (int i = 0; i < best.Length; i++)
+            {
+                try
+                {
+                    best[i].text = $"{i + 1}. {leaderBoard[i].userName} | {leaderBoard[i].score}";
+                }
+                catch
+                {
+                    best[i].text = $"{i + 1}. - | -";
+                }
+            }
+            Save.SaveData<Data>(leaderBoard, file);
+        }
         yield return new WaitWhile(Button);
         StartCoroutine(Active());
+    }
+    IEnumerator Error(string text)
+    {
+        error.text = text;
+        yield return new WaitForSecondsRealtime(2);
+        error.text = "";
     }
 }

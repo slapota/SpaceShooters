@@ -13,7 +13,7 @@ public class BoltM : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.timeScale == 1)
         {
             Instantiate(pBolt, player.transform.position + new Vector3(0, 0.7f, 0), pBolt.transform.rotation);
-            shot.volume = menu.GetComponent<Menu>().volume;
+            shot.volume = menu.GetComponent<Menu>().boltVolume;
             shot.Play();
         }
     }

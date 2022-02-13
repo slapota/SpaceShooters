@@ -10,12 +10,16 @@ public class Data
     public string password;
     public float volume;
     public int score;
+    public Color rgb;
+    public float boltVolume;
 
-    public Data(string name, string key, int high, float sounds)
+    public Data(string name, string key, int high, float sounds, Color color, float shots)
     {
         score = high;
         userName = name;
         password = key;
         volume = sounds;
+        rgb = color;
+        boltVolume = shots;
     }
 }
