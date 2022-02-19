@@ -21,6 +21,8 @@ public class Buttons : MonoBehaviour
     int position;
     public Text[] best, texts;
     bool playerExists = false;
+    public Canvas canvas;
+    public Canvas canvas2;
 
     bool Button() => Time.timeScale == 0.05f;
     public void NewUser()
@@ -38,7 +40,7 @@ public class Buttons : MonoBehaviour
             user.gameObject.SetActive(false);
             key.gameObject.SetActive(false);
             ok.SetActive(false);
-            player = new Data(user.text, key.text, 0, 0.5f, new Color(158, 185, 255, 255), 0.5f);
+            player = new Data(user.text, key.text, 0, 0.5f, new Color(158, 185, 255, 255), 0.5f, false);
             leaderBoard.Add(player);
             position = leaderBoard.IndexOf(player);
             Save.SaveData<Data>(leaderBoard, file);
@@ -47,6 +49,23 @@ public class Buttons : MonoBehaviour
         {
             playerExists = false;
             StartCoroutine(Error($"PLAYER NAMED {user.text} ALREADY EXISTS"));
+        }
+    }
+    public void Toggle(bool toggle)
+    {
+        if (toggle)
+        {
+            Screen.SetResolution(1000, 2120, false);
+            player = new Data(player.userName, player.password, player.score, player.volume, player.rgb, player.boltVolume, true);
+            canvas.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1000, 2120);
+            canvas2.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1000, 2120);
+        }
+        else
+        {
+            Screen.SetResolution(1400, 2120, false);
+            player = new Data(player.userName, player.password, player.score, player.volume, player.rgb, player.boltVolume, false);
+            canvas.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1400, 2120);
+            canvas2.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1400, 2120);
         }
     }
     private void Start()
@@ -84,7 +103,7 @@ public class Buttons : MonoBehaviour
         else
         {
             bool playerExists = false;
-            Data d = new Data(null, null, 0, 0, Color.white, 0);
+            Data d = new Data(null, null, 0, 0, Color.white, 0, false);
             foreach (var item in leaderBoard)
             {
                 if(user.text == item.userName)
@@ -129,7 +148,7 @@ public class Buttons : MonoBehaviour
     {
         Color c = color.GetComponent<Image>().color;
         Text(c);
-        player = new Data(player.userName, player.password, player.score, player.volume, c, player.boltVolume);
+        player = new Data(player.userName, player.password, player.score, player.volume, c, player.boltVolume, player.slim);
     }
     public void PlayAgain()
     {
@@ -169,16 +188,19 @@ public class Buttons : MonoBehaviour
         rocket.SetActive(true);
         yield return new WaitUntil(Button);
         playAgain.SetActive(true);
-        leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
-        if(score.score > high)
+        if(leaderBoard.Count != 0)
+        {
+            leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
+        }
+        if (score.score > high)
         {
             high = score.score;
             
         }
         highScore.text = $"HighScore: {high}"; 
-        if (player != null)
+        if (player.userName != "")
         {
-            player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume, player.rgb, menu.GetComponent<Menu>().boltVolume);
+            player = new Data(player.userName, player.password, high, menu.GetComponent<Menu>().volume, player.rgb, menu.GetComponent<Menu>().boltVolume, player.slim);
             leaderBoard[position] = player;
             leaderBoard = leaderBoard.OrderByDescending(x => x.score).ToList();
             for (int i = 0; i < best.Length; i++)

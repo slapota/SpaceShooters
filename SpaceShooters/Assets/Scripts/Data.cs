@@ -12,8 +12,9 @@ public class Data
     public int score;
     public Color rgb;
     public float boltVolume;
+    public bool slim;
 
-    public Data(string name, string key, int high, float sounds, Color color, float shots)
+    public Data(string name, string key, int high, float sounds, Color color, float shots, bool toggle)
     {
         score = high;
         userName = name;
@@ -21,5 +22,6 @@ public class Data
         volume = sounds;
         rgb = color;
         boltVolume = shots;
+        slim = toggle;
     }
 }
